@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header}">
+</head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 th:text="${product.id != null} ? 'Edit Produk' : 'Tambah Produk Baru'" class="mb-4">Form Produk</h2>
+
+                <form th:action="@{/products/save}" th:object="${product}" method="post">
+
+                    <!-- Hidden ID field -->
+                    <input type="hidden" th:field="*{id}">
+
+                    <!-- Nama Produk -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nama Produk</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}"
+                               placeholder="Masukkan nama produk" required>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Kategori</label>
+                        <select class="form-select" id="category" th:field="*{category}" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.displayName}">Kategori</option>
+                        </select>
+                    </div>
+
+                    <!-- Harga -->
+                    <div class="mb-3">
+                        <label for="priceDisplay" class="form-label">Harga</label>
+                        <input type="hidden" th:field="*{price}">
+                        <input type="text" class="form-control" id="priceDisplay"
+                               placeholder="Masukkan harga produk" required>
+                    </div>
+
+                    <!-- Stok -->
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stok</label>
+                        <input type="number" class="form-control" id="stock" th:field="*{stock}"
+                               min="0" placeholder="Masukkan jumlah stok" required>
+                    </div>
+
+                    <!-- Deskripsi -->
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Deskripsi</label>
+                        <textarea class="form-control" id="description" th:field="*{description}"
+                                  rows="3" placeholder="Masukkan deskripsi produk"></textarea>
+                    </div>
+
+                    <!-- Produk Aktif -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="active" th:field="*{active}">
+                        <label class="form-check-label" for="active">Produk Aktif</label>
+                    </div>
+
+                    <!-- Tanggal Dibuat -->
+                    <div class="mb-3">
+                        <label for="createdAt" class="form-label">Tanggal Dibuat</label>
+                        <input type="date" class="form-control" id="createdAt" th:field="*{createdAt}" required>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Simpan Produk</button>
+                        <a th:href="@{/products}" class="btn btn-secondary">Batal</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <script>
+        const priceHidden = document.getElementById('price');
+        const priceDisplay = document.getElementById('priceDisplay');
+
+        function formatThousand(value) {
+            return Number(value).toLocaleString('id-ID');
+        }
+
+        // Init: format existing value
+        if (priceHidden.value && priceHidden.value !== '0') {
+            priceDisplay.value = formatThousand(priceHidden.value);
+        }
+
+        // On input: format display, sync raw value to hidden, preserve cursor
+        priceDisplay.addEventListener('input', function () {
+            const oldValue = this.value;
+            const cursorPos = this.selectionStart;
+            const dotsBeforeCursor = oldValue.substring(0, cursorPos).split('.').length - 1;
+
+            const raw = oldValue.replace(/\./g, '').replace(/\D/g, '');
+            priceHidden.value = raw;
+            const formatted = raw ? formatThousand(raw) : '';
+            this.value = formatted;
+
+            const digitPos = cursorPos - dotsBeforeCursor;
+            const newDotsBeforeCursor = formatted.substring(0, digitPos + dotsBeforeCursor + 1).split('.').length - 1;
+            this.setSelectionRange(digitPos + newDotsBeforeCursor, digitPos + newDotsBeforeCursor);
+        });
+    </script>
+</body>
+</html>

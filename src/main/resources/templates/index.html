@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header}">
+</head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8 text-center">
+                <h1 class="display-4 mb-4">Selamat Datang di Product CRUD</h1>
+                <p class="lead mb-4">
+                    Aplikasi manajemen produk sederhana untuk praktikum JPA Fundamentals.
+                    Saat ini data disimpan di dalam memori (ArrayList). Pada praktikum berikutnya,
+                    Anda akan menambahkan JPA untuk menyimpan data ke database.
+                </p>
+                <a th:href="@{/products}" class="btn btn-primary btn-lg">
+                    Lihat Daftar Produk
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
