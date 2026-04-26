@@ -40,4 +40,13 @@ public class ProductService {
     public Page<Product> search(User user, String keyword, Long categoryId, Pageable pageable) {
         return productRepository.search(user, keyword, categoryId, pageable);
     }
+
+    public List<Product> findLowStock(User user) {
+        return productRepository.findByOwnerAndStockLessThan(user, 5);
+    }
+
+    public List<Product> findAll(User user) {
+        return productRepository.findByOwner(user);
+    }
+
 }

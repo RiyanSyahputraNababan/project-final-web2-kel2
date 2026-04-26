@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByOwner(User owner);
+    List<Product> findByOwnerAndStockLessThan(User owner, int stock);
 
     Optional<Product> findByIdAndOwner(Long id, User owner);
 

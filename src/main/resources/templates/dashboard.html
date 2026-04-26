@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+<!-- TOTAL -->
+<p>Total Produk: <b th:text="${totalProducts}"></b></p>
+<p>Total Nilai Inventory: <b th:text="${totalValue}"></b></p>
+
+<!-- STATUS -->
+<p>Produk Aktif: <span th:text="${activeCount}"></span></p>
+<p>Produk Tidak Aktif: <span th:text="${inactiveCount}"></span></p>
+
+<!-- CATEGORY -->
+<h3>Produk per Category</h3>
+<ul>
+    <li th:each="entry : ${categoryStats}">
+        <span th:text="${entry.key}"></span> :
+        <span th:text="${entry.value}"></span>
+    </li>
+</ul>
+
+<!-- LOW STOCK -->
+<h3>Low Stock (Stock < 5)</h3>
+
+<div th:if="${#lists.isEmpty(lowStock)}">
+    <p>Semua produk stok aman 👍</p>
+</div>
+
+<ul th:if="${!#lists.isEmpty(lowStock)}">
+    <li th:each="p : ${lowStock}">
+        <span th:text="${p.name}"></span> - Stock:
+        <span th:text="${p.stock}"></span>
+    </li>
+</ul>
+
+<!-- EMPTY -->
+<div th:if="${totalProducts == 0}">
+    <p>Belum ada produk. Yuk tambah produk!</p>
+</div>
+
+</body>
+</html>
