@@ -2,6 +2,8 @@ package com.example.productcrud.repository;
 
 import com.example.productcrud.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.productcrud.repository.UserRepository;
+import com.example.productcrud.model.User;
 
 import java.util.Optional;
 

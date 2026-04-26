@@ -1,6 +1,7 @@
 package com.example.productcrud.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,6 +16,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    // Relasi ke category
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Category> categories;
 
     public User() {
     }

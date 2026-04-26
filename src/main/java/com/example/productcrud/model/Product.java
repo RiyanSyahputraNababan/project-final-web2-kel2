@@ -2,9 +2,8 @@ package com.example.productcrud.model;
 
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "products")
@@ -17,13 +16,15 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 50)
-    private Category category;
-
+    // ✅ FIX: price tidak boleh ada annotation relasi
     private long price;
 
     private int stock;
+
+    // ✅ Relasi ke Category
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -33,6 +34,7 @@ public class Product {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
 
+    // ✅ Relasi ke User (owner)
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
