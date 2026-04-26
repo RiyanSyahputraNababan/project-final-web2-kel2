@@ -1,27 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Tambah Category</title>
+    <title>Form Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<h2>Tambah Category</h2>
+<body class="bg-gray-100 p-6">
 
-<form th:action="@{/categories/save}" th:object="${category}" method="post">
-    <input type="hidden" th:field="*{id}">
-    <label>Nama Category</label>
-    <input type="text" th:field="*{name}">
+<div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
 
-    <br><br>
+    <h2 class="text-xl font-bold mb-4"
+        th:text="${product.id != null ? 'Edit Produk' : 'Tambah Produk'}">
+    </h2>
 
-    <label>Deskripsi</label>
-    <textarea th:field="*{description}"></textarea>
+    <form th:action="@{/products/save}" method="post" th:object="${product}" class="space-y-3">
 
-    <br><br>
+        <input type="hidden" th:field="*{id}" />
 
-    <button type="submit">Simpan</button>
+        <input th:field="*{name}" placeholder="Nama Produk"
+               class="w-full border p-2 rounded" />
 
-</form>
+        <select th:field="*{category}" class="w-full border p-2 rounded">
+            <option value="">Pilih Category</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}">
+            </option>
+        </select>
+
+        <input type="number" th:field="*{price}" placeholder="Harga"
+               class="w-full border p-2 rounded" />
+
+        <input type="number" th:field="*{stock}" placeholder="Stock"
+               class="w-full border p-2 rounded" />
+
+        <textarea th:field="*{description}" placeholder="Deskripsi"
+                  class="w-full border p-2 rounded"></textarea>
+
+        <label class="flex items-center gap-2">
+            <input type="checkbox" th:field="*{active}" />
+            Aktif
+        </label>
+
+        <button type="submit"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Save
+        </button>
+
+    </form>
+
+</div>
 
 </body>
 </html>

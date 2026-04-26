@@ -2,24 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<h2>Profile</h2>
+<body class="bg-gray-100 p-6">
 
-<img th:src="${user.profileImageUrl != null ? user.profileImageUrl : 'https://via.placeholder.com/150'}"
-     width="150" />
+<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
 
-<p>Username: <span th:text="${user.username}"></span></p>
-<p>Nama: <span th:text="${user.fullName}"></span></p>
-<p>Email: <span th:text="${user.email}"></span></p>
-<p>Phone: <span th:text="${user.phoneNumber}"></span></p>
-<p>Address: <span th:text="${user.address}"></span></p>
-<p>Bio: <span th:text="${user.bio}"></span></p>
+    <div class="flex items-center gap-6">
+        <img th:src="${user.profileImageUrl != null ? user.profileImageUrl : 'https://via.placeholder.com/150'}"
+             class="w-32 h-32 rounded-full object-cover border" />
 
-<br>
+        <div>
+            <h2 class="text-2xl font-bold" th:text="${user.fullName}"></h2>
+            <p class="text-gray-600" th:text="${user.username}"></p>
+        </div>
+    </div>
 
-<a href="/profile/edit">Edit Profile</a>
-<a href="/profile/change-password">Ganti Password</a>
+    <div class="mt-6 space-y-2">
+        <p><b>Email:</b> <span th:text="${user.email}"></span></p>
+        <p><b>Phone:</b> <span th:text="${user.phoneNumber}"></span></p>
+        <p><b>Address:</b> <span th:text="${user.address}"></span></p>
+        <p><b>Bio:</b> <span th:text="${user.bio}"></span></p>
+    </div>
+
+    <div class="mt-6 flex gap-3">
+        <a href="/profile/edit"
+           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Edit Profile
+        </a>
+
+        <a href="/profile/change-password"
+           class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Ganti Password
+        </a>
+    </div>
+
+</div>
+
 </body>
 </html>

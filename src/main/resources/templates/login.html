@@ -1,55 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Product CRUD</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-light">
-    <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-5">
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h3 class="card-title text-center mb-4">Login</h3>
 
-                        <!-- Error: username/password salah -->
-                        <div th:if="${param.error}" class="alert alert-danger">
-                            Username atau password salah!
-                        </div>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 
-                        <!-- Info: berhasil logout -->
-                        <div th:if="${param.logout}" class="alert alert-info">
-                            Berhasil logout.
-                        </div>
+<div class="bg-white p-6 rounded shadow w-96">
 
-                        <!-- Success: registrasi berhasil (flash attribute) -->
-                        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <h2 class="text-xl font-bold mb-4 text-center">Login</h2>
 
-                        <form th:action="@{/login}" method="post">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                       placeholder="Masukkan username" required autofocus>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                       placeholder="Masukkan password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Login</button>
-                        </form>
-
-                        <div class="text-center mt-3">
-                            <span>Belum punya akun? </span>
-                            <a th:href="@{/register}">Daftar di sini</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- ERROR MESSAGE -->
+    <div th:if="${param.error}"
+         class="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">
+        Username atau password salah
     </div>
+
+    <!-- LOGOUT MESSAGE -->
+    <div th:if="${param.logout}"
+         class="bg-green-100 text-green-700 p-2 rounded mb-3 text-sm">
+        Logout berhasil
+    </div>
+
+    <form method="post" action="/login" class="space-y-3">
+
+        <input type="text" name="username"
+               placeholder="Username"
+               class="w-full border p-2 rounded" required />
+
+        <input type="password" name="password"
+               placeholder="Password"
+               class="w-full border p-2 rounded" required />
+
+        <!-- 🔥 WAJIB: CSRF TOKEN -->
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+
+        <button type="submit"
+                class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+            Login
+        </button>
+
+    </form>
+
+    <p class="mt-4 text-center text-sm">
+        Belum punya akun?
+        <a href="/register" class="text-blue-500 underline">Register</a>
+    </p>
+
+</div>
+
 </body>
 </html>

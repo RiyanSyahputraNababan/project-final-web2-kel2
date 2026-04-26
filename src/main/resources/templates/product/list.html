@@ -2,104 +2,157 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Daftar Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<h2>Daftar Produk</h2>
+<body class="bg-gray-100 p-6">
 
-<a th:href="@{/products/new}">Tambah Produk</a>
+<div class="max-w-6xl mx-auto">
 
-<br><br>
-<p>Total produk: <span th:text="${totalItems}"></span></p>
-<br>
-<!-- SEARCH & FILTER -->
-<form method="get" action="/products">
-
-    <input type="text" name="keyword"
-           placeholder="Cari produk..."
-           th:value="${keyword}" />
-
-    <select name="category">
-        <option value="">Semua Category</option>
-
-        <option th:each="cat : ${categories}"
-                th:value="${cat.id}"
-                th:text="${cat.name}"
-                th:selected="${cat.id == selectedCategory}">
-        </option>
-    </select>
-
-    <button type="submit">Search</button>
-
-</form>
-
-<br>
-
-<!-- JIKA DATA KOSONG -->
-<div th:if="${#lists.isEmpty(products)}">
-    <p>Tidak ada produk</p>
-</div>
-
-<!-- TABEL PRODUK -->
-<table border="1" th:if="${!#lists.isEmpty(products)}">
-
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nama</th>
-        <th>Category</th>
-        <th>Harga</th>
-        <th>Stock</th>
-        <th>Status</th>
-        <th>Aksi</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <tr th:each="product : ${products}">
-        <td th:text="${product.id}"></td>
-        <td th:text="${product.name}"></td>
-        <td th:text="${product.category != null ? product.category.name : '-'}"></td>
-        <td th:text="${product.price}"></td>
-        <td th:text="${product.stock}"></td>
-        <td th:text="${product.active ? 'Aktif' : 'Tidak Aktif'}"></td>
-        <td>
-            <a th:href="@{/products/{id}(id=${product.id})}">Detail</a>
-            |
-            <a th:href="@{/products/{id}/edit(id=${product.id})}">Edit</a>
-            |
-            <form th:action="@{/products/{id}/delete(id=${product.id})}"
-                  method="post" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-
-</table>
-
-<div>
-
-    <!-- Previous -->
-    <a th:if="${currentPage > 0}"
-       th:href="@{/products(page=${currentPage - 1}, keyword=${keyword}, category=${selectedCategory})}">
-        Previous
-    </a>
-
-    <!-- Nomor Halaman -->
-    <span th:if="${totalPages > 0}"
-          th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-        <a th:href="@{/products(page=${i}, keyword=${keyword}, category=${selectedCategory})}"
-           th:text="${i + 1}"
-           th:style="${i == currentPage} ? 'font-weight:bold' : ''">
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Daftar Produk</h2>
+        <a th:href="@{/products/new}"
+           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            + Tambah Produk
         </a>
-    </span>
+    </div>
 
-    <!-- Next -->
-    <a th:if="${currentPage < totalPages - 1}"
-       th:href="@{/products(page=${currentPage + 1}, keyword=${keyword}, category=${selectedCategory})}">
-        Next
-    </a>
+    <!-- TOTAL -->
+    <p class="mb-4 text-gray-700">
+        Total produk:
+        <span class="font-bold" th:text="${totalItems}"></span>
+    </p>
+
+    <!-- SEARCH -->
+    <form method="get" action="/products"
+          class="bg-white p-4 rounded shadow mb-6 flex flex-wrap gap-3">
+
+        <input type="text" name="keyword"
+               placeholder="Cari produk..."
+               th:value="${keyword}"
+               class="border p-2 rounded w-full md:w-1/3" />
+
+        <select name="category"
+                class="border p-2 rounded w-full md:w-1/4">
+            <option value="">Semua Category</option>
+
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}"
+                    th:selected="${cat.id == selectedCategory}">
+            </option>
+        </select>
+
+        <button type="submit"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            Search
+        </button>
+    </form>
+
+    <!-- EMPTY -->
+    <div th:if="${#lists.isEmpty(products)}"
+         class="bg-white p-6 rounded shadow text-center text-gray-500">
+        <p class="text-lg">Belum ada produk</p>
+        <a href="/products/new" class="text-blue-500 underline">
+            Tambah sekarang
+        </a>
+    </div>
+
+    <!-- TABLE -->
+    <div th:if="${!#lists.isEmpty(products)}"
+         class="bg-white rounded shadow overflow-x-auto">
+
+        <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-200">
+            <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">Nama</th>
+                <th class="p-3">Category</th>
+                <th class="p-3">Harga</th>
+                <th class="p-3">Stock</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Aksi</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="product : ${products}" class="border-b hover:bg-gray-50">
+
+                <td class="p-3" th:text="${product.id}"></td>
+                <td class="p-3 font-medium" th:text="${product.name}"></td>
+
+                <td class="p-3"
+                    th:text="${product.category != null ? product.category.name : '-'}">
+                </td>
+
+                <!-- 🔥 FIX RUPIAH -->
+                <td class="p-3"
+                    th:text="'Rp ' + ${#numbers.formatInteger(product.price, 0, 'POINT')}">
+                </td>
+
+                <td class="p-3" th:text="${product.stock}"></td>
+
+                <td class="p-3">
+                    <span th:if="${product.active}"
+                          class="text-green-600 font-semibold">Aktif</span>
+                    <span th:unless="${product.active}"
+                          class="text-red-500 font-semibold">Tidak Aktif</span>
+                </td>
+
+                <td class="p-3 space-x-2">
+
+                    <a th:href="@{/products/{id}(id=${product.id})}"
+                       class="text-blue-600 hover:underline">
+                        Detail
+                    </a>
+
+                    <a th:href="@{/products/{id}/edit(id=${product.id})}"
+                       class="text-yellow-600 hover:underline">
+                        Edit
+                    </a>
+
+                    <form th:action="@{/products/{id}/delete(id=${product.id})}"
+                          method="post" class="inline">
+                        <button type="submit"
+                                class="text-red-600 hover:underline">
+                            Delete
+                        </button>
+                    </form>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="mt-6 flex flex-wrap items-center gap-2">
+
+        <a th:if="${currentPage > 0}"
+           th:href="@{/products(page=${currentPage - 1}, keyword=${keyword}, category=${selectedCategory})}"
+           class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+            Previous
+        </a>
+
+        <span th:if="${totalPages > 0}"
+              th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+
+            <a th:href="@{/products(page=${i}, keyword=${keyword}, category=${selectedCategory})}"
+               th:text="${i + 1}"
+               class="px-3 py-1 rounded"
+               th:classappend="${i == currentPage} ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'">
+            </a>
+
+        </span>
+
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/products(page=${currentPage + 1}, keyword=${keyword}, category=${selectedCategory})}"
+           class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+            Next
+        </a>
+
+    </div>
 
 </div>
 

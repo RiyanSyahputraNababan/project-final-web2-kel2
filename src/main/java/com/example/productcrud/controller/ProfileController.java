@@ -18,7 +18,7 @@ public class ProfileController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ✅ HANYA SATU CONSTRUCTOR
+    //HANYA SATU CONSTRUCTOR
     public ProfileController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

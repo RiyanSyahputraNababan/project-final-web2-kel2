@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: header}">
+<head>
+    <title>Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-    <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-8 text-center">
-                <h1 class="display-4 mb-4">Selamat Datang di Product CRUD</h1>
-                <p class="lead mb-4">
-                    Aplikasi manajemen produk sederhana untuk praktikum JPA Fundamentals.
-                    Saat ini data disimpan di dalam memori (ArrayList). Pada praktikum berikutnya,
-                    Anda akan menambahkan JPA untuk menyimpan data ke database.
-                </p>
-                <a th:href="@{/products}" class="btn btn-primary btn-lg">
-                    Lihat Daftar Produk
-                </a>
-            </div>
-        </div>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+<div class="text-center">
+
+    <h1 class="text-3xl font-bold mb-4">Product Management App</h1>
+
+    <p class="text-gray-600 mb-6">
+        Kelola produk dengan mudah dan cepat
+    </p>
+
+    <div class="space-x-4">
+
+        <a href="/login"
+           class="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600">
+            Login
+        </a>
+
+        <a href="/register"
+           class="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600">
+            Register
+        </a>
+
     </div>
 
-    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</div>
+
 </body>
 </html>
