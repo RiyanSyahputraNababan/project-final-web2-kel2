@@ -1,45 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Category List</title>
+    <title>Daftar Produk</title>
 </head>
 <body>
 
-<h2>Daftar Category</h2>
+<h2>Daftar Produk</h2>
 
-<a th:href="@{/categories/create}">Tambah Category</a>
+<a th:href="@{/products/new}">Tambah Produk</a>
 
-<table border="1">
+<br><br>
+<p>Total produk: <span th:text="${totalItems}"></span></p>
+<br>
+<!-- SEARCH & FILTER -->
+<form method="get" action="/products">
+
+    <input type="text" name="keyword"
+           placeholder="Cari produk..."
+           th:value="${keyword}" />
+
+    <select name="category">
+        <option value="">Semua Category</option>
+
+        <option th:each="cat : ${categories}"
+                th:value="${cat.id}"
+                th:text="${cat.name}"
+                th:selected="${cat.id == selectedCategory}">
+        </option>
+    </select>
+
+    <button type="submit">Search</button>
+
+</form>
+
+<br>
+
+<!-- JIKA DATA KOSONG -->
+<div th:if="${#lists.isEmpty(products)}">
+    <p>Tidak ada produk</p>
+</div>
+
+<!-- TABEL PRODUK -->
+<table border="1" th:if="${!#lists.isEmpty(products)}">
 
     <thead>
     <tr>
         <th>ID</th>
         <th>Nama</th>
-        <th>Deskripsi</th>
+        <th>Category</th>
+        <th>Harga</th>
+        <th>Stock</th>
+        <th>Status</th>
         <th>Aksi</th>
     </tr>
     </thead>
 
     <tbody>
-    <td>
-        <a th:href="@{/categories/edit/{id}(id=${category.id})}">
-            Edit
-        </a>
-
-        |
-
-        <a th:href="@{/categories/delete/{id}(id=${category.id})}">
-            Delete
-        </a>
-    </td>
-    <tr th:each="category : ${categories}">
-        <td th:text="${category.id}"></td>
-        <td th:text="${category.name}"></td>
-        <td th:text="${category.description}"></td>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.category != null ? product.category.name : '-'}"></td>
+        <td th:text="${product.price}"></td>
+        <td th:text="${product.stock}"></td>
+        <td th:text="${product.active ? 'Aktif' : 'Tidak Aktif'}"></td>
+        <td>
+            <a th:href="@{/products/{id}(id=${product.id})}">Detail</a>
+            |
+            <a th:href="@{/products/{id}/edit(id=${product.id})}">Edit</a>
+            |
+            <form th:action="@{/products/{id}/delete(id=${product.id})}"
+                  method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 
 </table>
+
+<div>
+
+    <!-- Previous -->
+    <a th:if="${currentPage > 0}"
+       th:href="@{/products(page=${currentPage - 1}, keyword=${keyword}, category=${selectedCategory})}">
+        Previous
+    </a>
+
+    <!-- Nomor Halaman -->
+    <span th:if="${totalPages > 0}"
+          th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/products(page=${i}, keyword=${keyword}, category=${selectedCategory})}"
+           th:text="${i + 1}"
+           th:style="${i == currentPage} ? 'font-weight:bold' : ''">
+        </a>
+    </span>
+
+    <!-- Next -->
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/products(page=${currentPage + 1}, keyword=${keyword}, category=${selectedCategory})}">
+        Next
+    </a>
+
+</div>
 
 </body>
 </html>

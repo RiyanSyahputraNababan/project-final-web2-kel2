@@ -7,6 +7,7 @@ import com.example.productcrud.service.ProductService;
 import com.example.productcrud.service.CategoryService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @Controller
 public class ProductController {
@@ -45,12 +49,31 @@ public class ProductController {
 
     // ===== List Product =====
     @GetMapping("/products")
-    public String listProducts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String listProducts(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long category,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
 
         User currentUser = getCurrentUser(userDetails);
 
-        model.addAttribute("products",
-                productService.findAllByOwner(currentUser));
+        Page<Product> productPage = productService.search(
+                currentUser,
+                keyword,
+                category,
+                PageRequest.of(page, 10)
+        );
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+
+        model.addAttribute("totalItems", productPage.getTotalElements());
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("categories", categoryService.getCategoriesByUser(currentUser));
 
         return "product/list";
     }

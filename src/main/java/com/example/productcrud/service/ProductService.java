@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class ProductService {
 
@@ -32,5 +35,9 @@ public class ProductService {
     public void deleteByIdAndOwner(Long id, User owner) {
         productRepository.findByIdAndOwner(id, owner)
                 .ifPresent(product -> productRepository.delete(product));
+    }
+
+    public Page<Product> search(User user, String keyword, Long categoryId, Pageable pageable) {
+        return productRepository.search(user, keyword, categoryId, pageable);
     }
 }
