@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Profile</title>
+</head>
+<body>
+
+<h2>Edit Profile</h2>
+
+<form method="post" action="/profile/update">
+
+  <input type="text" name="fullName" placeholder="Nama"
+         th:value="${user.fullName}" />
+
+  <input type="email" name="email" placeholder="Email"
+         th:value="${user.email}" />
+
+  <input type="text" name="phoneNumber" placeholder="Phone"
+         th:value="${user.phoneNumber}" />
+
+  <input type="text" name="address" placeholder="Address"
+         th:value="${user.address}" />
+
+  <textarea name="bio" placeholder="Bio"
+            th:text="${user.bio}"></textarea>
+
+  <input type="text" name="profileImageUrl" placeholder="Image URL"
+         th:value="${user.profileImageUrl}" />
+
+  <br><br>
+
+  <button type="submit">Save</button>
+
+</form>
+
+</body>
+</html>

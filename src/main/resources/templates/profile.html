@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+
+<h2>Profile</h2>
+
+<img th:src="${user.profileImageUrl != null ? user.profileImageUrl : 'https://via.placeholder.com/150'}"
+     width="150" />
+
+<p>Username: <span th:text="${user.username}"></span></p>
+<p>Nama: <span th:text="${user.fullName}"></span></p>
+<p>Email: <span th:text="${user.email}"></span></p>
+<p>Phone: <span th:text="${user.phoneNumber}"></span></p>
+<p>Address: <span th:text="${user.address}"></span></p>
+<p>Bio: <span th:text="${user.bio}"></span></p>
+
+<br>
+
+<a href="/profile/edit">Edit Profile</a>
+
+</body>
+</html>
