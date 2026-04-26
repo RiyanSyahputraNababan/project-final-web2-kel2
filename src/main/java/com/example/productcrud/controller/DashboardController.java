@@ -31,8 +31,10 @@ public class DashboardController {
         this.userRepository = userRepository;
     }
 
+    // ✅ FIX: jangan return null
     private User getCurrentUser(UserDetails userDetails) {
-        return userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+        return userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
     }
 
     @GetMapping("/dashboard")
@@ -51,8 +53,13 @@ public class DashboardController {
                 .sum();
 
         // Aktif vs Tidak Aktif
-        long activeCount = products.stream().filter(Product::isActive).count();
-        long inactiveCount = products.stream().filter(p -> !p.isActive()).count();
+        long activeCount = products.stream()
+                .filter(Product::isActive)
+                .count();
+
+        long inactiveCount = products.stream()
+                .filter(p -> !p.isActive())
+                .count();
 
         // Produk per Category
         Map<String, Long> categoryStats = products.stream()
@@ -65,6 +72,7 @@ public class DashboardController {
         // Low Stock
         List<Product> lowStock = productService.findLowStock(user);
 
+        // Kirim ke view
         model.addAttribute("totalProducts", totalProducts);
         model.addAttribute("totalValue", totalValue);
         model.addAttribute("activeCount", activeCount);

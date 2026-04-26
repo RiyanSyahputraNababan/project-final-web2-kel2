@@ -9,7 +9,10 @@
 
 <!-- TOTAL -->
 <p>Total Produk: <b th:text="${totalProducts}"></b></p>
-<p>Total Nilai Inventory: <b th:text="${totalValue}"></b></p>
+
+<p>Total Nilai Inventory:
+    <b th:text="'Rp ' + ${#numbers.formatInteger(totalValue, 0, 'POINT')}"></b>
+</p>
 
 <!-- STATUS -->
 <p>Produk Aktif: <span th:text="${activeCount}"></span></p>
@@ -17,7 +20,14 @@
 
 <!-- CATEGORY -->
 <h3>Produk per Category</h3>
-<ul>
+
+<!-- Jika kosong -->
+<div th:if="${#maps.isEmpty(categoryStats)}">
+    <p>Belum ada kategori</p>
+</div>
+
+<!-- Jika ada -->
+<ul th:if="${!#maps.isEmpty(categoryStats)}">
     <li th:each="entry : ${categoryStats}">
         <span th:text="${entry.key}"></span> :
         <span th:text="${entry.value}"></span>
@@ -38,10 +48,17 @@
     </li>
 </ul>
 
-<!-- EMPTY -->
+<!-- EMPTY DATA -->
 <div th:if="${totalProducts == 0}">
     <p>Belum ada produk. Yuk tambah produk!</p>
 </div>
+
+<br>
+
+<!-- NAVIGATION (BONUS BAGUS UNTUK NILAI) -->
+<a href="/products">Produk</a> |
+<a href="/categories">Category</a> |
+<a href="/profile">Profile</a>
 
 </body>
 </html>
