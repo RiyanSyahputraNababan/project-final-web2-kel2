@@ -13,35 +13,70 @@
         th:text="${product.id != null ? 'Edit Produk' : 'Tambah Produk'}">
     </h2>
 
-    <form th:action="@{/products/save}" method="post" th:object="${product}" class="space-y-3">
+    <form th:action="@{/products/save}" method="post" th:object="${product}" class="space-y-4">
 
+        <!-- CSRF TOKEN -->
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+
+        <!-- ID -->
         <input type="hidden" th:field="*{id}" />
 
-        <input th:field="*{name}" placeholder="Nama Produk"
-               class="w-full border p-2 rounded" />
+        <!-- NAMA -->
+        <div>
+            <label class="block font-semibold">Nama Produk</label>
+            <input th:field="*{name}"
+                   placeholder="Masukkan nama produk"
+                   class="w-full border p-2 rounded" required />
+        </div>
 
-        <select th:field="*{category}" class="w-full border p-2 rounded">
-            <option value="">Pilih Category</option>
-            <option th:each="cat : ${categories}"
-                    th:value="${cat.id}"
-                    th:text="${cat.name}">
-            </option>
-        </select>
+        <!-- CATEGORY -->
+        <div>
+            <label class="block font-semibold">Category</label>
+            <select name="categoryId" class="w-full border p-2 rounded" required>
 
-        <input type="number" th:field="*{price}" placeholder="Harga"
-               class="w-full border p-2 rounded" />
+                <option value="">-- Pilih Category --</option>
 
-        <input type="number" th:field="*{stock}" placeholder="Stock"
-               class="w-full border p-2 rounded" />
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}">
+                </option>
 
-        <textarea th:field="*{description}" placeholder="Deskripsi"
-                  class="w-full border p-2 rounded"></textarea>
+            </select>
+        </div>
 
+        <!-- HARGA -->
+        <div>
+            <label class="block font-semibold">Harga</label>
+            <input type="number" th:field="*{price}"
+                   placeholder="Masukkan harga"
+                   class="w-full border p-2 rounded" required />
+        </div>
+
+        <!-- STOCK -->
+        <div>
+            <label class="block font-semibold">Stock</label>
+            <input type="number" th:field="*{stock}"
+                   placeholder="Masukkan jumlah stok"
+                   class="w-full border p-2 rounded" required />
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div>
+            <label class="block font-semibold">Deskripsi</label>
+            <textarea th:field="*{description}"
+                      placeholder="Deskripsi produk"
+                      class="w-full border p-2 rounded"></textarea>
+        </div>
+
+        <!-- STATUS -->
         <label class="flex items-center gap-2">
             <input type="checkbox" th:field="*{active}" />
             Aktif
         </label>
 
+        <!-- BUTTON -->
         <button type="submit"
                 class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             Save

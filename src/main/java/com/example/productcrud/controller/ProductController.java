@@ -8,6 +8,7 @@ import com.example.productcrud.service.CategoryService;
 
 import java.time.LocalDate;
 import java.util.List;
+import com.example.productcrud.model.Category;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -119,33 +120,54 @@ public class ProductController {
     // ===== Simpan Product =====
     @PostMapping("/products/save")
     public String saveProduct(@ModelAttribute Product product,
+                              @RequestParam(required = false) Long categoryId,
                               @AuthenticationPrincipal UserDetails userDetails,
                               RedirectAttributes redirectAttributes) {
 
         User currentUser = getCurrentUser(userDetails);
 
-        // Validasi ownership saat edit
-        if (product.getId() != null) {
-            boolean isOwner = productService
-                    .findByIdAndOwner(product.getId(), currentUser)
-                    .isPresent();
+        try {
 
-            if (!isOwner) {
-                redirectAttributes.addFlashAttribute("errorMessage",
-                        "Produk tidak ditemukan.");
-                return "redirect:/products";
+            // 🔥 VALIDASI CATEGORY
+            if (categoryId == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Category wajib dipilih!");
+                return "redirect:/products/new";
             }
+
+            Category category = categoryService.getById(categoryId);
+
+            if (category == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Category tidak valid!");
+                return "redirect:/products/new";
+            }
+
+            product.setCategory(category);
+
+            // VALIDASI OWNER (EDIT MODE)
+            if (product.getId() != null) {
+                boolean isOwner = productService
+                        .findByIdAndOwner(product.getId(), currentUser)
+                        .isPresent();
+
+                if (!isOwner) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Produk tidak ditemukan.");
+                    return "redirect:/products";
+                }
+            }
+
+            product.setOwner(currentUser);
+            productService.save(product);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Produk berhasil disimpan!");
+
+            return "redirect:/products";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal menyimpan produk!");
+            return "redirect:/products/new";
         }
-
-        product.setOwner(currentUser);
-        productService.save(product);
-
-        redirectAttributes.addFlashAttribute("successMessage",
-                "Produk berhasil disimpan!");
-
-        return "redirect:/products";
     }
-
     // ===== Form Edit Product =====
     @GetMapping("/products/{id}/edit")
     public String showEditForm(@PathVariable Long id,
