@@ -11,13 +11,28 @@
 
   <h2 class="text-xl font-bold mb-4">Edit Profile</h2>
 
+  <!-- SUCCESS -->
+  <div th:if="${success}"
+       class="bg-green-100 text-green-700 p-2 rounded mb-3 text-sm">
+    <span th:text="${success}"></span>
+  </div>
+
+  <!-- ERROR -->
+  <div th:if="${error}"
+       class="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">
+    <span th:text="${error}"></span>
+  </div>
+
+  <!-- ===================== -->
+  <!-- 🔹 FORM UPDATE PROFILE -->
+  <!-- ===================== -->
   <form method="post" action="/profile/update" class="space-y-3">
 
     <input name="fullName" th:value="${user.fullName}"
            placeholder="Nama"
            class="w-full border p-2 rounded" />
 
-    <input name="email" th:value="${user.email}"
+    <input type="email" name="email" th:value="${user.email}"
            placeholder="Email"
            class="w-full border p-2 rounded" />
 
@@ -29,20 +44,64 @@
            placeholder="Address"
            class="w-full border p-2 rounded" />
 
-    <textarea name="bio" th:text="${user.bio}"
+    <textarea name="bio"
               placeholder="Bio"
-              class="w-full border p-2 rounded"></textarea>
+              class="w-full border p-2 rounded"
+              th:text="${user.bio}"></textarea>
 
     <input name="profileImageUrl" th:value="${user.profileImageUrl}"
-           placeholder="Image URL"
+           placeholder="Image URL (opsional)"
            class="w-full border p-2 rounded" />
 
-    <button type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-      Save
-    </button>
+    <!-- CSRF -->
+    <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}" />
+
+    <div class="flex justify-between items-center mt-4">
+
+      <a href="/profile"
+         class="text-gray-600 hover:underline">
+        ← Kembali
+      </a>
+
+      <button type="submit"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Save
+      </button>
+
+    </div>
 
   </form>
+
+  <!-- ===================== -->
+  <!-- 🔥 FORM UPLOAD IMAGE -->
+  <!-- ===================== -->
+  <div class="mt-8 border-t pt-6">
+
+    <h3 class="font-semibold mb-2">Upload Foto Profile</h3>
+
+    <form method="post"
+          action="/profile/upload-image"
+          enctype="multipart/form-data"
+          class="space-y-3">
+
+      <input type="file" name="file"
+             class="w-full border p-2 rounded" required />
+
+      <!-- CSRF -->
+      <input type="hidden"
+             th:name="${_csrf.parameterName}"
+             th:value="${_csrf.token}" />
+
+      <button type="submit"
+              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+        Upload Foto
+      </button>
+
+    </form>
+
+  </div>
 
 </div>
 

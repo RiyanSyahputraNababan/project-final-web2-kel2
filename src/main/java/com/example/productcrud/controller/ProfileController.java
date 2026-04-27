@@ -18,7 +18,6 @@ public class ProfileController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    //HANYA SATU CONSTRUCTOR
     public ProfileController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -43,29 +42,39 @@ public class ProfileController {
         return "profile-edit";
     }
 
-    // ===== UPDATE PROFILE =====
+    // ===== UPDATE PROFILE (FINAL FIX) =====
     @PostMapping("/profile/update")
     public String updateProfile(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam String fullName,
-            @RequestParam String email,
-            @RequestParam String phoneNumber,
-            @RequestParam String address,
-            @RequestParam String bio,
-            @RequestParam String profileImageUrl
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String bio,
+            @RequestParam(required = false) String profileImageUrl,
+            RedirectAttributes redirectAttributes
     ) {
-        User user = getCurrentUser(userDetails);
+        try {
+            User user = getCurrentUser(userDetails);
 
-        user.setFullName(fullName);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        user.setAddress(address);
-        user.setBio(bio);
-        user.setProfileImageUrl(profileImageUrl);
+            // 🔥 HANDLE NULL + TRIM
+            user.setFullName(fullName != null ? fullName.trim() : "");
+            user.setEmail(email != null ? email.trim() : "");
+            user.setPhoneNumber(phoneNumber != null ? phoneNumber.trim() : "");
+            user.setAddress(address != null ? address.trim() : "");
+            user.setBio(bio != null ? bio.trim() : "");
+            user.setProfileImageUrl(profileImageUrl != null ? profileImageUrl.trim() : "");
 
-        userRepository.save(user);
+            userRepository.save(user);
 
-        return "redirect:/profile";
+            redirectAttributes.addFlashAttribute("success", "Profile berhasil diupdate!");
+            return "redirect:/profile";
+
+        } catch (Exception e) {
+            e.printStackTrace(); // 🔥 WAJIB lihat di console kalau error
+            redirectAttributes.addFlashAttribute("error", "Gagal update profile!");
+            return "redirect:/profile/edit";
+        }
     }
 
     // ===== CHANGE PASSWORD =====
@@ -101,5 +110,55 @@ public class ProfileController {
 
         redirectAttributes.addFlashAttribute("success", "Password berhasil diubah!");
         return "redirect:/profile";
+    }
+    @PostMapping("/profile/upload-image")
+    public String uploadImage(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            if (file.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "File kosong!");
+                return "redirect:/profile/edit";
+            }
+
+            // (opsional tapi bagus) batasi tipe
+            String contentType = file.getContentType();
+            if (contentType == null ||
+                    (!contentType.equals("image/jpeg") &&
+                            !contentType.equals("image/png") &&
+                            !contentType.equals("image/jpg"))) {
+                redirectAttributes.addFlashAttribute("error", "Hanya JPG/PNG!");
+                return "redirect:/profile/edit";
+            }
+
+            // nama file unik
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            java.nio.file.Path uploadPath = java.nio.file.Paths.get("uploads");
+
+            if (!java.nio.file.Files.exists(uploadPath)) {
+                java.nio.file.Files.createDirectories(uploadPath);
+            }
+
+            java.nio.file.Files.copy(
+                    file.getInputStream(),
+                    uploadPath.resolve(fileName),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            );
+
+            // simpan ke user
+            User user = getCurrentUser(userDetails);
+            user.setProfileImageUrl("/uploads/" + fileName);
+            userRepository.save(user);
+
+            redirectAttributes.addFlashAttribute("success", "Foto berhasil diupload!");
+            return "redirect:/profile";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Gagal upload!");
+            return "redirect:/profile/edit";
+        }
     }
 }
