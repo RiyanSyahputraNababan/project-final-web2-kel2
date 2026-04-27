@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content)">
+
 <head>
     <title th:text="${title}">App</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,7 +47,6 @@
 
     </div>
 </nav>
-
 
 <div class="max-w-6xl mx-auto mt-4">
 

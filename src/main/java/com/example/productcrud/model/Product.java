@@ -16,12 +16,15 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    // ✅ FIX: price tidak boleh ada annotation relasi
-    private long price;
+    // harga (tidak null, default 0)
+    @Column(nullable = false)
+    private long price = 0;
 
-    private int stock;
+    // stok (tidak null, default 0)
+    @Column(nullable = false)
+    private int stock = 0;
 
-    // ✅ Relasi ke Category
+    // relasi ke category
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -29,12 +32,13 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private boolean active;
+    @Column(nullable = false)
+    private boolean active = true;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
 
-    // ✅ Relasi ke User (owner)
+    // relasi ke user (owner)
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
@@ -54,6 +58,8 @@ public class Product {
         this.createdAt = createdAt;
     }
 
+    // ===== GETTER & SETTER =====
+
     public Long getId() {
         return id;
     }
@@ -70,14 +76,6 @@ public class Product {
         this.name = name;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
     public long getPrice() {
         return price;
     }
@@ -92,6 +90,14 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getDescription() {
