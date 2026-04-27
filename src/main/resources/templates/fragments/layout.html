@@ -14,8 +14,8 @@
 
     <!-- LOGO -->
     <div class="flex items-center gap-3">
-        <div class="bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow">
-            PC
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-1 rounded-lg font-bold shadow">
+            K.2
         </div>
         <span class="font-bold text-gray-700 text-lg">
             Product App
@@ -35,14 +35,16 @@
             Produk
         </a>
 
-        <!-- DROPDOWN -->
-        <div class="relative group">
+        <!-- ===== DROPDOWN (FIXED) ===== -->
+        <div class="relative">
 
-            <button class="font-semibold text-gray-700">
+            <button onclick="toggleDropdown()"
+                    class="font-semibold text-gray-700 hover:text-blue-500 transition">
                 👤 Account
             </button>
 
-            <div class="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg hidden group-hover:block overflow-hidden">
+            <div id="dropdownMenu"
+                 class="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg hidden overflow-hidden z-50">
 
                 <a href="/profile"
                    class="block px-4 py-2 hover:bg-gray-100">
@@ -90,6 +92,24 @@
 <div class="max-w-6xl mx-auto px-4 pb-10">
     <div th:replace="${content}"></div>
 </div>
+
+<!-- ===== SCRIPT DROPDOWN ===== -->
+<script>
+    function toggleDropdown() {
+        const menu = document.getElementById("dropdownMenu");
+        menu.classList.toggle("hidden");
+    }
+
+    // klik di luar → close dropdown
+    document.addEventListener("click", function (event) {
+        const dropdown = document.getElementById("dropdownMenu");
+        const button = event.target.closest("button");
+
+        if (!event.target.closest(".relative")) {
+            dropdown.classList.add("hidden");
+        }
+    });
+</script>
 
 </body>
 </html>

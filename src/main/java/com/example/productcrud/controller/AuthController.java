@@ -2,24 +2,31 @@ package com.example.productcrud.controller;
 
 import com.example.productcrud.dto.RegisterRequest;
 import com.example.productcrud.model.User;
+import com.example.productcrud.model.Category;
 import com.example.productcrud.repository.UserRepository;
+import com.example.productcrud.service.CategoryService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.transaction.Transactional; // 🔥 penting
 
 @Controller
 public class AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CategoryService categoryService;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          CategoryService categoryService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/login")
@@ -34,6 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Transactional // 🔥 WAJIB: biar user + category tersimpan dalam 1 transaksi
     public String processRegister(@ModelAttribute RegisterRequest registerRequest,
                                   RedirectAttributes redirectAttributes) {
 
@@ -49,7 +57,7 @@ public class AuthController {
         }
 
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            redirectAttributes.addFlashAttribute("error", "Password dan konfirmasi password tidak cocok!");
+            redirectAttributes.addFlashAttribute("error", "Password tidak cocok!");
             return "redirect:/register";
         }
 
@@ -60,17 +68,41 @@ public class AuthController {
 
         // ===== SIMPAN USER =====
         User user = new User();
-
         user.setUsername(registerRequest.getUsername().trim());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-
-        // 🔥 TAMBAHAN (PROFILE FIELD)
         user.setFullName(registerRequest.getFullName());
         user.setEmail(registerRequest.getEmail());
 
-        userRepository.save(user);
+        user = userRepository.save(user); // 🔥 IMPORTANT: ambil user hasil save
+
+        System.out.println("🔥 USER CREATED: " + user.getUsername());
+
+        // ===== BUAT CATEGORY =====
+        createDefaultCategories(user);
 
         redirectAttributes.addFlashAttribute("success", "Registrasi berhasil! Silakan login.");
         return "redirect:/login";
+    }
+
+    private void createDefaultCategories(User user) {
+
+        String[] defaultCategories = {
+                "Elektronik",
+                "Pakaian",
+                "Food & Drink",
+                "Mainan",
+                "Kesehatan"
+        };
+
+        for (String name : defaultCategories) {
+            Category c = new Category();
+            c.setName(name);
+            c.setUser(user);
+
+            categoryService.save(c);
+
+            // 🔥 DEBUG
+            System.out.println("✅ Category dibuat: " + name);
+        }
     }
 }

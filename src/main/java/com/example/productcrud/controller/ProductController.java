@@ -2,13 +2,13 @@ package com.example.productcrud.controller;
 
 import com.example.productcrud.model.Product;
 import com.example.productcrud.model.User;
+import com.example.productcrud.model.Category;
 import com.example.productcrud.repository.UserRepository;
 import com.example.productcrud.service.ProductService;
 import com.example.productcrud.service.CategoryService;
 
 import java.time.LocalDate;
 import java.util.List;
-import com.example.productcrud.model.Category;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,6 +42,35 @@ public class ProductController {
                 .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
     }
 
+    // ===== 🔥 FIX CATEGORY AUTO CREATE =====
+    private List<Category> getOrCreateCategories(User user) {
+
+        List<Category> categories = categoryService.getCategoriesByUser(user);
+
+        if (categories == null || categories.isEmpty()) {
+
+            String[] defaultCategories = {
+                    "Elektronik",
+                    "Pakaian",
+                    "Food & Drink",
+                    "Mainan",
+                    "Kesehatan"
+            };
+
+            for (String name : defaultCategories) {
+                Category c = new Category();
+                c.setName(name);
+                c.setUser(user);
+                categoryService.save(c);
+            }
+
+            // ambil ulang setelah insert
+            categories = categoryService.getCategoriesByUser(user);
+        }
+
+        return categories;
+    }
+
     // ===== Redirect Home =====
     @GetMapping("/")
     public String index() {
@@ -69,12 +98,13 @@ public class ProductController {
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productPage.getTotalPages());
-
         model.addAttribute("totalItems", productPage.getTotalElements());
 
         model.addAttribute("keyword", keyword);
         model.addAttribute("selectedCategory", category);
-        model.addAttribute("categories", categoryService.getCategoriesByUser(currentUser));
+
+        // 🔥 FIX DI SINI
+        model.addAttribute("categories", getOrCreateCategories(currentUser));
 
         return "product/list";
     }
@@ -94,8 +124,7 @@ public class ProductController {
                     return "product/detail";
                 })
                 .orElseGet(() -> {
-                    redirectAttributes.addFlashAttribute("errorMessage",
-                            "Produk tidak ditemukan.");
+                    redirectAttributes.addFlashAttribute("errorMessage", "Produk tidak ditemukan.");
                     return "redirect:/products";
                 });
     }
@@ -111,8 +140,9 @@ public class ProductController {
         User user = getCurrentUser(userDetails);
 
         model.addAttribute("product", product);
-        model.addAttribute("categories",
-                categoryService.getCategoriesByUser(user));
+
+        // 🔥 FIX DI SINI
+        model.addAttribute("categories", getOrCreateCategories(user));
 
         return "product/form";
     }
@@ -128,7 +158,6 @@ public class ProductController {
 
         try {
 
-            // 🔥 VALIDASI CATEGORY
             if (categoryId == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Category wajib dipilih!");
                 return "redirect:/products/new";
@@ -143,7 +172,6 @@ public class ProductController {
 
             product.setCategory(category);
 
-            // VALIDASI OWNER (EDIT MODE)
             if (product.getId() != null) {
                 boolean isOwner = productService
                         .findByIdAndOwner(product.getId(), currentUser)
@@ -168,6 +196,7 @@ public class ProductController {
             return "redirect:/products/new";
         }
     }
+
     // ===== Form Edit Product =====
     @GetMapping("/products/{id}/edit")
     public String showEditForm(@PathVariable Long id,
@@ -182,14 +211,13 @@ public class ProductController {
 
                     model.addAttribute("product", product);
 
-                    model.addAttribute("categories",
-                            categoryService.getCategoriesByUser(currentUser));
+                    // 🔥 FIX DI SINI
+                    model.addAttribute("categories", getOrCreateCategories(currentUser));
 
                     return "product/form";
                 })
                 .orElseGet(() -> {
-                    redirectAttributes.addFlashAttribute("errorMessage",
-                            "Produk tidak ditemukan.");
+                    redirectAttributes.addFlashAttribute("errorMessage", "Produk tidak ditemukan.");
                     return "redirect:/products";
                 });
     }
@@ -208,11 +236,9 @@ public class ProductController {
 
         if (isOwner) {
             productService.deleteByIdAndOwner(id, currentUser);
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Produk berhasil dihapus!");
+            redirectAttributes.addFlashAttribute("successMessage", "Produk berhasil dihapus!");
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Produk tidak ditemukan.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Produk tidak ditemukan.");
         }
 
         return "redirect:/products";
