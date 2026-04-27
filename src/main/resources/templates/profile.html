@@ -5,22 +5,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 p-6">
+<body class="bg-gradient-to-br from-gray-100 via-white to-blue-100 min-h-screen">
 
-<nav class="bg-white shadow mb-6">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+<!-- NAVBAR -->
+<nav class="bg-white shadow-md">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        <div class="font-bold text-lg">
-            Product App
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow">
+                PC
+            </div>
+            <span class="font-bold text-gray-700">Product App</span>
         </div>
 
-        <div class="space-x-4">
+        <div class="flex items-center gap-6 text-sm">
 
-            <a href="/dashboard" class="text-gray-700 hover:text-blue-500">
+            <a href="/dashboard" class="text-gray-600 hover:text-blue-500 transition">
                 Dashboard
             </a>
 
-            <a href="/products" class="text-gray-700 hover:text-blue-500">
+            <a href="/products" class="text-gray-600 hover:text-blue-500 transition">
                 Products
             </a>
 
@@ -28,11 +32,11 @@
                 Profile
             </a>
 
-            <form action="/logout" method="post" class="inline">
+            <form action="/logout" method="post">
                 <input type="hidden"
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}" />
-                <button class="text-red-500 hover:underline">
+                <button class="text-red-500 hover:text-red-600 font-semibold">
                     Logout
                 </button>
             </form>
@@ -42,35 +46,69 @@
     </div>
 </nav>
 
-<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+<!-- PROFILE CARD -->
+<div class="max-w-3xl mx-auto mt-10 px-4">
 
-    <div class="flex items-center gap-6">
-        <img th:src="${user.profileImageUrl != null ? user.profileImageUrl : 'https://via.placeholder.com/150'}"
-             class="w-32 h-32 rounded-full object-cover border" />
+    <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8">
 
-        <div>
-            <h2 class="text-2xl font-bold" th:text="${user.fullName}"></h2>
-            <p class="text-gray-600" th:text="${user.username}"></p>
+        <!-- HEADER -->
+        <div class="flex flex-col md:flex-row items-center gap-6">
+
+            <!-- FOTO -->
+            <img th:src="${user.profileImageUrl != null ? user.profileImageUrl : 'https://via.placeholder.com/150'}"
+                 class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow" />
+
+            <!-- INFO -->
+            <div class="text-center md:text-left">
+                <h2 class="text-2xl font-extrabold text-gray-800"
+                    th:text="${user.fullName}"></h2>
+
+                <p class="text-gray-500"
+                   th:text="${user.username}"></p>
+            </div>
+
         </div>
-    </div>
 
-    <div class="mt-6 space-y-2">
-        <p><b>Email:</b> <span th:text="${user.email}"></span></p>
-        <p><b>Phone:</b> <span th:text="${user.phoneNumber}"></span></p>
-        <p><b>Address:</b> <span th:text="${user.address}"></span></p>
-        <p><b>Bio:</b> <span th:text="${user.bio}"></span></p>
-    </div>
+        <!-- DETAIL -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
 
-    <div class="mt-6 flex gap-3">
-        <a href="/profile/edit"
-           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Edit Profile
-        </a>
+            <div>
+                <p class="text-gray-500">Email</p>
+                <p class="font-semibold text-gray-700" th:text="${user.email}"></p>
+            </div>
 
-        <a href="/profile/change-password"
-           class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-            Ganti Password
-        </a>
+            <div>
+                <p class="text-gray-500">Phone</p>
+                <p class="font-semibold text-gray-700" th:text="${user.phoneNumber}"></p>
+            </div>
+
+            <div>
+                <p class="text-gray-500">Address</p>
+                <p class="font-semibold text-gray-700" th:text="${user.address}"></p>
+            </div>
+
+            <div>
+                <p class="text-gray-500">Bio</p>
+                <p class="font-semibold text-gray-700" th:text="${user.bio}"></p>
+            </div>
+
+        </div>
+
+        <!-- BUTTON -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+
+            <a href="/profile/edit"
+               class="flex-1 bg-blue-500 text-white text-center px-4 py-2 rounded-lg shadow hover:bg-blue-600 hover:scale-[1.02] transition">
+                Edit Profile
+            </a>
+
+            <a href="/profile/change-password"
+               class="flex-1 bg-gray-500 text-white text-center px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:scale-[1.02] transition">
+                Ganti Password
+            </a>
+
+        </div>
+
     </div>
 
 </div>

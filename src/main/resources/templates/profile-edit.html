@@ -5,68 +5,96 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 p-6">
+<body class="bg-gradient-to-br from-gray-100 via-white to-blue-100 min-h-screen p-6">
 
-<div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+<div class="max-w-xl mx-auto bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl">
 
-  <h2 class="text-xl font-bold mb-4">Edit Profile</h2>
+  <!-- TITLE -->
+  <h2 class="text-2xl font-extrabold mb-6 text-gray-800 text-center">
+    Edit Profile ✏️
+  </h2>
 
   <!-- SUCCESS -->
   <div th:if="${success}"
-       class="bg-green-100 text-green-700 p-2 rounded mb-3 text-sm">
+       class="bg-green-100 border border-green-300 text-green-700 p-3 rounded-lg mb-4 text-sm text-center">
     <span th:text="${success}"></span>
   </div>
 
   <!-- ERROR -->
   <div th:if="${error}"
-       class="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">
+       class="bg-red-100 border border-red-300 text-red-700 p-3 rounded-lg mb-4 text-sm text-center">
     <span th:text="${error}"></span>
   </div>
 
   <!-- ===================== -->
   <!-- 🔹 FORM UPDATE PROFILE -->
   <!-- ===================== -->
-  <form method="post" action="/profile/update" class="space-y-3">
+  <form method="post" action="/profile/update" class="space-y-4">
 
-    <input name="fullName" th:value="${user.fullName}"
-           placeholder="Nama"
-           class="w-full border p-2 rounded" />
+    <!-- NAMA -->
+    <div>
+      <label class="text-sm font-semibold text-gray-600">Nama Lengkap</label>
+      <input name="fullName" th:value="${user.fullName}"
+             class="w-full border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-lg mt-1"
+             placeholder="Masukkan nama lengkap" />
+    </div>
 
-    <input type="email" name="email" th:value="${user.email}"
-           placeholder="Email"
-           class="w-full border p-2 rounded" />
+    <!-- EMAIL -->
+    <div>
+      <label class="text-sm font-semibold text-gray-600">Email</label>
+      <input type="email" name="email" th:value="${user.email}"
+             class="w-full border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-lg mt-1"
+             placeholder="Masukkan email" />
+    </div>
 
-    <input name="phoneNumber" th:value="${user.phoneNumber}"
-           placeholder="Phone"
-           class="w-full border p-2 rounded" />
+    <!-- PHONE -->
+    <div>
+      <label class="text-sm font-semibold text-gray-600">Phone</label>
+      <input name="phoneNumber" th:value="${user.phoneNumber}"
+             class="w-full border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-lg mt-1"
+             placeholder="Masukkan nomor HP" />
+    </div>
 
-    <input name="address" th:value="${user.address}"
-           placeholder="Address"
-           class="w-full border p-2 rounded" />
+    <!-- ADDRESS -->
+    <div>
+      <label class="text-sm font-semibold text-gray-600">Address</label>
+      <input name="address" th:value="${user.address}"
+             class="w-full border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-lg mt-1"
+             placeholder="Masukkan alamat" />
+    </div>
 
-    <textarea name="bio"
-              placeholder="Bio"
-              class="w-full border p-2 rounded"
-              th:text="${user.bio}"></textarea>
+    <!-- BIO -->
+    <div>
+      <label class="text-sm font-semibold text-gray-600">Bio</label>
+      <textarea name="bio"
+                class="w-full border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-lg mt-1"
+                placeholder="Tulis bio singkat"
+                th:text="${user.bio}"></textarea>
+    </div>
 
-    <input name="profileImageUrl" th:value="${user.profileImageUrl}"
-           placeholder="Image URL (opsional)"
-           class="w-full border p-2 rounded" />
+    <!-- IMAGE URL -->
+    <div>
+      <label class="text-sm font-semibold text-gray-600">Image URL</label>
+      <input name="profileImageUrl" th:value="${user.profileImageUrl}"
+             class="w-full border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-lg mt-1"
+             placeholder="Link gambar (opsional)" />
+    </div>
 
     <!-- CSRF -->
     <input type="hidden"
            th:name="${_csrf.parameterName}"
            th:value="${_csrf.token}" />
 
-    <div class="flex justify-between items-center mt-4">
+    <!-- BUTTON -->
+    <div class="flex justify-between items-center mt-6">
 
       <a href="/profile"
-         class="text-gray-600 hover:underline">
+         class="text-gray-600 hover:text-blue-500 transition">
         ← Kembali
       </a>
 
       <button type="submit"
-              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+              class="bg-blue-500 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-600 hover:scale-[1.02] transition">
         Save
       </button>
 
@@ -77,17 +105,19 @@
   <!-- ===================== -->
   <!-- 🔥 FORM UPLOAD IMAGE -->
   <!-- ===================== -->
-  <div class="mt-8 border-t pt-6">
+  <div class="mt-10 border-t pt-6">
 
-    <h3 class="font-semibold mb-2">Upload Foto Profile</h3>
+    <h3 class="font-semibold mb-4 text-gray-700">
+      Upload Foto Profile 📸
+    </h3>
 
     <form method="post"
           action="/profile/upload-image"
           enctype="multipart/form-data"
-          class="space-y-3">
+          class="space-y-4">
 
       <input type="file" name="file"
-             class="w-full border p-2 rounded" required />
+             class="w-full border border-gray-300 p-2 rounded-lg" required />
 
       <!-- CSRF -->
       <input type="hidden"
@@ -95,7 +125,7 @@
              th:value="${_csrf.token}" />
 
       <button type="submit"
-              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+              class="w-full bg-green-500 text-white py-2 rounded-lg shadow hover:bg-green-600 hover:scale-[1.02] transition">
         Upload Foto
       </button>
 

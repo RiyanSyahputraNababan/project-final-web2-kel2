@@ -5,35 +5,80 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 p-6">
+<body class="bg-gradient-to-br from-gray-100 via-white to-blue-100 min-h-screen flex items-center justify-center p-6">
 
-<div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+<div class="max-w-xl w-full bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl">
 
-    <h2 class="text-xl font-bold mb-4">Detail Produk</h2>
+    <!-- TITLE -->
+    <h2 class="text-2xl font-extrabold mb-6 text-gray-800 text-center">
+        Detail Produk 📦
+    </h2>
 
-    <p><b>Nama:</b> <span th:text="${product.name}"></span></p>
+    <!-- CONTENT -->
+    <div class="space-y-4 text-sm">
 
-    <p><b>Category:</b>
-        <span th:text="${product.category != null ? product.category.name : '-'}"></span>
-    </p>
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Nama</span>
+            <span class="font-semibold text-gray-800"
+                  th:text="${product.name}"></span>
+        </div>
 
-    <p><b>Harga:</b>
-        <span th:text="'Rp ' + ${#numbers.formatInteger(product.price, 0, 'POINT')}"></span>
-    </p>
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Category</span>
+            <span class="font-semibold text-gray-800"
+                  th:text="${product.category != null ? product.category.name : '-'}"></span>
+        </div>
 
-    <p><b>Stock:</b> <span th:text="${product.stock}"></span></p>
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Harga</span>
+            <span class="font-semibold text-green-600"
+                  th:text="'Rp ' + ${#numbers.formatInteger(product.price, 0, 'POINT')}"></span>
+        </div>
 
-    <p><b>Status:</b>
-        <span th:text="${product.active ? 'Aktif' : 'Tidak Aktif'}"></span>
-    </p>
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Stock</span>
+            <span class="font-semibold text-gray-800"
+                  th:text="${product.stock}"></span>
+        </div>
 
-    <p><b>Deskripsi:</b></p>
-    <p class="text-gray-600" th:text="${product.description}"></p>
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">Status</span>
 
-    <a href="/products"
-       class="inline-block mt-4 text-blue-500 underline">
-        ← Kembali
-    </a>
+            <span th:if="${product.active}"
+                  class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-semibold">
+                Aktif
+            </span>
+
+            <span th:unless="${product.active}"
+                  class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-semibold">
+                Tidak Aktif
+            </span>
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div class="mt-4">
+            <p class="text-gray-500 mb-1">Deskripsi</p>
+            <p class="text-gray-700 bg-gray-50 p-3 rounded-lg"
+               th:text="${product.description}">
+            </p>
+        </div>
+
+    </div>
+
+    <!-- BUTTON -->
+    <div class="mt-6 flex justify-between items-center">
+
+        <a href="/products"
+           class="text-gray-600 hover:text-blue-500 transition">
+            ← Kembali
+        </a>
+
+        <a th:href="@{/products/{id}/edit(id=${product.id})}"
+           class="bg-yellow-500 text-white px-4 py-2 rounded-lg shadow hover:bg-yellow-600 hover:scale-[1.02] transition">
+            Edit
+        </a>
+
+    </div>
 
 </div>
 

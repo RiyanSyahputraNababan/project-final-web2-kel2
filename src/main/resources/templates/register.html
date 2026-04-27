@@ -5,55 +5,98 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body class="bg-gradient-to-br from-green-100 via-white to-blue-100 flex items-center justify-center min-h-screen">
 
-<div class="bg-white p-6 rounded shadow w-96">
+<div class="bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-96">
 
-    <h2 class="text-xl font-bold mb-4 text-center">Register</h2>
+    <!-- LOGO -->
+    <div class="text-center mb-6">
+        <div class="bg-green-500 text-white px-4 py-2 rounded-lg inline-block font-bold shadow">
+            PC
+        </div>
+    </div>
 
-    <!-- ERROR MESSAGE -->
+    <!-- TITLE -->
+    <h2 class="text-2xl font-extrabold text-center text-gray-800 mb-6">
+        Create Account 🚀
+    </h2>
+
+    <!-- ERROR -->
     <div th:if="${error}"
-         class="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">
+         class="bg-red-100 border border-red-300 text-red-700 p-2 rounded mb-3 text-sm text-center">
         <span th:text="${error}"></span>
     </div>
 
     <!-- SUCCESS -->
     <div th:if="${success}"
-         class="bg-green-100 text-green-700 p-2 rounded mb-3 text-sm">
+         class="bg-green-100 border border-green-300 text-green-700 p-2 rounded mb-3 text-sm text-center">
         <span th:text="${success}"></span>
     </div>
 
-    <form method="post" action="/register" class="space-y-3">
+    <form method="post" action="/register" class="space-y-4">
 
-        <input name="username" placeholder="Username"
-               class="w-full border p-2 rounded" required />
+        <!-- USERNAME -->
+        <div>
+            <label class="text-sm font-semibold text-gray-600">Username</label>
+            <input name="username"
+                   placeholder="Masukkan username"
+                   class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 p-2 rounded-lg mt-1"
+                   required />
+        </div>
 
-        <input name="fullName" placeholder="Nama Lengkap"
-               class="w-full border p-2 rounded" />
+        <!-- FULL NAME -->
+        <div>
+            <label class="text-sm font-semibold text-gray-600">Nama Lengkap</label>
+            <input name="fullName"
+                   placeholder="Masukkan nama lengkap"
+                   class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 p-2 rounded-lg mt-1" />
+        </div>
 
-        <input type="email" name="email" placeholder="Email"
-               class="w-full border p-2 rounded" />
+        <!-- EMAIL -->
+        <div>
+            <label class="text-sm font-semibold text-gray-600">Email</label>
+            <input type="email" name="email"
+                   placeholder="Masukkan email"
+                   class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 p-2 rounded-lg mt-1" />
+        </div>
 
-        <input type="password" name="password" placeholder="Password"
-               class="w-full border p-2 rounded" required />
+        <!-- PASSWORD -->
+        <div>
+            <label class="text-sm font-semibold text-gray-600">Password</label>
+            <input type="password" name="password"
+                   placeholder="Masukkan password"
+                   class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 p-2 rounded-lg mt-1"
+                   required />
+        </div>
 
-        <input type="password" name="confirmPassword" placeholder="Konfirmasi Password"
-               class="w-full border p-2 rounded" required />
+        <!-- CONFIRM PASSWORD -->
+        <div>
+            <label class="text-sm font-semibold text-gray-600">Konfirmasi Password</label>
+            <input type="password" name="confirmPassword"
+                   placeholder="Ulangi password"
+                   class="w-full border border-gray-300 focus:ring-2 focus:ring-green-400 p-2 rounded-lg mt-1"
+                   required />
+        </div>
 
-        <!-- 🔥 WAJIB -->
+        <!-- CSRF -->
         <input type="hidden"
                th:name="${_csrf.parameterName}"
                th:value="${_csrf.token}" />
 
-        <button class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
+        <!-- BUTTON -->
+        <button
+                class="w-full bg-green-500 text-white py-2 rounded-lg shadow hover:bg-green-600 hover:scale-[1.02] transition duration-200">
             Register
         </button>
 
     </form>
 
-    <p class="mt-4 text-center text-sm">
+    <!-- LINK -->
+    <p class="mt-6 text-center text-sm text-gray-600">
         Sudah punya akun?
-        <a href="/login" class="text-blue-500 underline">Login</a>
+        <a href="/login" class="text-blue-500 font-semibold hover:underline">
+            Login
+        </a>
     </p>
 
 </div>

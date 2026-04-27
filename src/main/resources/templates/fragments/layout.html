@@ -7,40 +7,63 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-gray-100 via-white to-blue-100 min-h-screen">
 
-<!-- NAVBAR -->
-<nav class="bg-blue-600 text-white p-4 flex justify-between items-center">
+<!-- ===== NAVBAR ===== -->
+<nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
 
-    <div class="font-bold text-lg">
-        <a href="/dashboard">Product App</a>
+    <!-- LOGO -->
+    <div class="flex items-center gap-3">
+        <div class="bg-blue-500 text-white px-3 py-1 rounded-lg font-bold shadow">
+            PC
+        </div>
+        <span class="font-bold text-gray-700 text-lg">
+            Product App
+        </span>
     </div>
 
-    <div class="flex items-center gap-6">
+    <!-- MENU -->
+    <div class="flex items-center gap-6 text-sm">
 
-        <a href="/dashboard" class="hover:underline">Dashboard</a>
-        <a href="/products" class="hover:underline">Produk</a>
+        <a href="/dashboard"
+           class="text-gray-600 hover:text-blue-500 transition">
+            Dashboard
+        </a>
+
+        <a href="/products"
+           class="text-gray-600 hover:text-blue-500 transition">
+            Produk
+        </a>
 
         <!-- DROPDOWN -->
         <div class="relative group">
 
-            <button class="font-semibold">
+            <button class="font-semibold text-gray-700">
                 👤 Account
             </button>
 
-            <div class="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow hidden group-hover:block">
+            <div class="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg hidden group-hover:block overflow-hidden">
 
-                <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">
+                <a href="/profile"
+                   class="block px-4 py-2 hover:bg-gray-100">
                     Profile
                 </a>
 
-                <a href="/profile/change-password" class="block px-4 py-2 hover:bg-gray-100">
+                <a href="/profile/change-password"
+                   class="block px-4 py-2 hover:bg-gray-100">
                     Change Password
                 </a>
 
-                <a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">
-                    Logout
-                </a>
+                <form action="/logout" method="post">
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
+
+                    <button
+                            class="w-full text-left px-4 py-2 hover:bg-red-100 text-red-500">
+                        Logout
+                    </button>
+                </form>
 
             </div>
         </div>
@@ -48,24 +71,23 @@
     </div>
 </nav>
 
-<div class="max-w-6xl mx-auto mt-4">
+<!-- ===== ALERT ===== -->
+<div class="max-w-6xl mx-auto mt-6 px-4">
 
-    <!-- SUCCESS -->
     <div th:if="${success}"
-         class="bg-green-100 text-green-700 p-3 rounded mb-4">
+         class="bg-green-100 border border-green-300 text-green-700 p-3 rounded-lg mb-4 shadow-sm">
         <span th:text="${success}"></span>
     </div>
 
-    <!-- ERROR -->
     <div th:if="${error}"
-         class="bg-red-100 text-red-700 p-3 rounded mb-4">
+         class="bg-red-100 border border-red-300 text-red-700 p-3 rounded-lg mb-4 shadow-sm">
         <span th:text="${error}"></span>
     </div>
 
 </div>
 
-<!-- CONTENT -->
-<div class="p-6">
+<!-- ===== CONTENT ===== -->
+<div class="max-w-6xl mx-auto px-4 pb-10">
     <div th:replace="${content}"></div>
 </div>
 
