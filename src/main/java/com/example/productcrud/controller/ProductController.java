@@ -19,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort;
 
 @Controller
 public class ProductController {
@@ -92,7 +94,7 @@ public class ProductController {
                 currentUser,
                 keyword,
                 category,
-                PageRequest.of(page, 10)
+                PageRequest.of(page, 10, Sort.by("id").ascending())
         );
 
         model.addAttribute("products", productPage.getContent());

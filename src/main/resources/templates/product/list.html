@@ -71,7 +71,7 @@
 
             <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
             <tr>
-                <th class="p-4 text-left">ID</th>
+                <th class="p-4 text-left">No</th>
                 <th class="p-4 text-left">Nama</th>
                 <th class="p-4 text-left">Category</th>
                 <th class="p-4 text-left">Harga</th>
@@ -82,10 +82,12 @@
             </thead>
 
             <tbody>
-            <tr th:each="product : ${products}"
+            <tr th:each="product, iter : ${products}"
                 class="border-t hover:bg-blue-50 transition">
 
-                <td class="p-4 text-gray-500" th:text="${product.id}"></td>
+                <!-- 🔥 NOMOR URUT (Bukan ID DB) -->
+                <td class="p-4 text-gray-500"
+                    th:text="${iter.index + 1 + (currentPage * 10)}"></td>
 
                 <td class="p-4 font-semibold text-gray-800"
                     th:text="${product.name}"></td>
@@ -149,14 +151,12 @@
     <div th:if="${totalPages > 0}"
          class="mt-6 flex flex-wrap items-center gap-2 justify-center">
 
-        <!-- PREVIOUS -->
         <a th:if="${currentPage > 0}"
            th:href="@{/products(page=${currentPage - 1}, keyword=${keyword}, category=${selectedCategory})}"
            class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300">
             Previous
         </a>
 
-        <!-- NUMBER -->
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
 
         <a th:href="@{/products(page=${i}, keyword=${keyword}, category=${selectedCategory})}"
@@ -165,9 +165,8 @@
            th:classappend="${i == currentPage} ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'">
         </a>
 
-    </span>
+        </span>
 
-        <!-- NEXT -->
         <a th:if="${currentPage < totalPages - 1}"
            th:href="@{/products(page=${currentPage + 1}, keyword=${keyword}, category=${selectedCategory})}"
            class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300">
